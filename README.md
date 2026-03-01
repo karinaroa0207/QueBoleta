@@ -48,4 +48,4 @@ Desarrollar una plataforma web funcional que permita gestionar eventos y comerci
 
 ---
 
-Si quieres, también puedo darte una versión un poco más “pro” con estructura tipo GitHub (con secciones de instalación, tecnologías, estado del proyecto, etc.) para que se vea más completo 😉
+
