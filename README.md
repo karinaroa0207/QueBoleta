@@ -1,10 +1,10 @@
-# 🎟️ QueBoleta
+#  QueBoleta
 
 **Plataforma web para la gestión y venta de entradas a eventos culturales y deportivos en Colombia.**
 
 ---
 
-## 📌 Descripción del Proyecto
+##  Descripción del Proyecto
 
 **QueBoleta** es una aplicación web diseñada para permitir la administración, venta y validación de entradas digitales para eventos como conciertos, festivales, deportes y obras de teatro.
 
@@ -20,13 +20,13 @@ El sistema permite:
 
 ---
 
-## 🎯 Objetivo General
+##  Objetivo General
 
 Desarrollar una plataforma web funcional que permita gestionar eventos y comercializar entradas digitales de manera segura, rápida y organizada.
 
 ---
 
-## 🧩 Funcionalidades Principales
+##  Funcionalidades Principales
 
 * Registro e inicio de sesión.
 * Recuperación de contraseña.
@@ -40,7 +40,12 @@ Desarrollar una plataforma web funcional que permita gestionar eventos y comerci
 
 ---
 
-## 👥 Integrantes del Proyecto
+##  Prototipo
+
+https://www.figma.com/make/x4xE9rt79n3wvKfGnVDpDw/QueBoleta-homepage-prototype?p=f
+
+---
+##  Integrantes del Proyecto
 
 * **Ana Karina Roa Mora** – 20232020118
 * **Juan Pablo Galindo Florez** – 20231020230
