@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { Music, Trophy, Theater, Sparkles } from 'lucide-react';
+import { Link } from 'react-router';
 
 const categories = [
   {
@@ -43,15 +44,15 @@ export function Categories() {
           {categories.map((category, index) => {
             const Icon = category.icon;
             return (
-              <motion.div
-                key={category.name}
-                className="group cursor-pointer"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className="relative">
+              <Link to="/categorias" key={category.name}>
+                <motion.div
+                  className="group cursor-pointer"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="relative">
                   {/* Icon Circle */}
                   <div className={`w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full bg-gradient-to-br ${category.gradient} flex items-center justify-center mb-4 transition-all duration-300 group-hover:shadow-[${category.glow}]`}>
                     <Icon className="w-10 h-10 sm:w-14 sm:h-14 text-white" strokeWidth={1.5} />
@@ -66,6 +67,7 @@ export function Categories() {
                   <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300`} />
                 </div>
               </motion.div>
+              </Link>
             );
           })}
         </div>

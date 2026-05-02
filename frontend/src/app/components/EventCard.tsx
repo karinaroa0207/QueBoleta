@@ -1,7 +1,9 @@
 import { motion } from 'motion/react';
 import { Calendar, MapPin } from 'lucide-react';
+import { Link } from 'react-router';
 
 interface EventCardProps {
+  id?: string;
   image: string;
   title: string;
   date: string;
@@ -10,15 +12,16 @@ interface EventCardProps {
   delay?: number;
 }
 
-export function EventCard({ image, title, date, location, price, delay = 0 }: EventCardProps) {
+export function EventCard({ id = '1', image, title, date, location, price, delay = 0 }: EventCardProps) {
   return (
-    <motion.div
-      className="group relative bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 hover:border-[#7B2CFF]/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(123,44,255,0.3)]"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
-      whileHover={{ y: -8 }}
-    >
+    <Link to={`/evento/${id}`}>
+      <motion.div
+        className="group relative bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 hover:border-[#7B2CFF]/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(123,44,255,0.3)] cursor-pointer"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay }}
+        whileHover={{ y: -8 }}
+      >
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <img 
@@ -64,5 +67,6 @@ export function EventCard({ image, title, date, location, price, delay = 0 }: Ev
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7B2CFF] via-[#00C2FF] to-[#FF2D95]" />
       </div>
     </motion.div>
+    </Link>
   );
 }

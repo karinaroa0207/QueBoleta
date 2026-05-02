@@ -6,8 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-@Data
 @Entity
+@Data
 public class Evento {
 
     @Id
@@ -17,5 +17,8 @@ public class Evento {
     private String nombre;
     private String ciudad;
     private Double precio;
-
+    
+    // --- LOS DOS CAMPOS NUEVOS ---
+    private String fecha;
+    private String imagenUrl;
 }

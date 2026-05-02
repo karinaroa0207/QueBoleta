@@ -1,25 +1,20 @@
-import { Navbar } from './components/Navbar';
-import { HeroSection } from './components/HeroSection';
-import { FeaturedEvents } from './components/FeaturedEvents';
-import { Categories } from './components/Categories';
-import { ComingSoon } from './components/ComingSoon';
-import { TrustSection } from './components/TrustSection';
-import { Footer } from './components/Footer';
-import { ScrollToTop } from './components/ScrollToTop';
+import { BrowserRouter, Routes, Route } from 'react-router';
+import { HomePage } from './components/HomePage';
+import { LoginPage } from './components/LoginPage';
+import { CartPage } from './components/CartPage';
+import { CategoriesPage } from './components/CategoriesPage';
+import { EventDetailPage } from './components/EventDetailPage';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-[#0D0D0D] overflow-x-hidden">
-      <Navbar />
-      <main>
-        <HeroSection />
-        <FeaturedEvents />
-        <Categories />
-        <ComingSoon />
-        <TrustSection />
-      </main>
-      <Footer />
-      <ScrollToTop />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/categorias" element={<CategoriesPage />} />
+        <Route path="/evento/:id" element={<EventDetailPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

@@ -27,11 +27,15 @@ export function FeaturedEvents() {
           {/* 3. Reemplazamos la lista estática por la variable 'eventos' que viene de Java */}
           {eventos.map((evento: any, index: number) => (
             <EventCard
-              key={index}
-              /* Como en Java aún no tenemos imagen ni fecha, ponemos unos por defecto por ahora */
-              image="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=1080&auto=format&fit=crop"
+              // Usamos el ID real de la base de datos en lugar del index
+              key={evento.id} 
+              id={evento.id ? evento.id.toString() : index.toString()} // Previene errores si el ID llega vacío
+              
+              // ¡Aquí está la magia! Conectamos la foto y la fecha reales
+              image={evento.imagenUrl}
+              date={evento.fecha}
+              
               title={evento.nombre}
-              date="Fecha por confirmar" 
               location={evento.ciudad}
               price={`$${evento.precio}`}
               delay={index * 0.1}

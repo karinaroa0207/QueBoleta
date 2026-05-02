@@ -1,4 +1,5 @@
 import { Search, ShoppingCart } from 'lucide-react';
+import { Link } from 'react-router';
 
 export function Navbar() {
   return (
@@ -6,11 +7,11 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-[#7B2CFF] via-[#00C2FF] to-[#7B2CFF] bg-clip-text text-transparent">
+          <Link to="/" className="flex-shrink-0">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-[#7B2CFF] via-[#00C2FF] to-[#7B2CFF] bg-clip-text text-transparent hover:opacity-80 transition-opacity cursor-pointer">
               QueBoleta
             </h1>
-          </div>
+          </Link>
 
           {/* Search Bar */}
           <div className="hidden md:flex flex-1 max-w-xl mx-8">
@@ -26,18 +27,18 @@ export function Navbar() {
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
-            <button className="hidden sm:block px-4 py-2 border border-[#00C2FF] text-[#00C2FF] rounded-xl hover:bg-[#00C2FF]/10 hover:shadow-[0_0_15px_rgba(0,194,255,0.4)] transition-all duration-300">
+            <Link to="/login" className="hidden sm:block px-4 py-2 border border-[#00C2FF] text-[#00C2FF] rounded-xl hover:bg-[#00C2FF]/10 hover:shadow-[0_0_15px_rgba(0,194,255,0.4)] transition-all duration-300">
               Iniciar sesión
-            </button>
-            <button className="px-4 py-2 bg-gradient-to-r from-[#7B2CFF] to-[#9D4EDD] text-white rounded-xl hover:shadow-[0_0_20px_rgba(123,44,255,0.5)] transition-all duration-300">
+            </Link>
+            <Link to="/login" className="px-4 py-2 bg-gradient-to-r from-[#7B2CFF] to-[#9D4EDD] text-white rounded-xl hover:shadow-[0_0_20px_rgba(123,44,255,0.5)] transition-all duration-300">
               Registrarse
-            </button>
-            <button className="relative p-2 text-white hover:text-[#00C2FF] transition-colors">
+            </Link>
+            <Link to="/cart" className="relative p-2 text-white hover:text-[#00C2FF] transition-colors">
               <ShoppingCart className="w-6 h-6" />
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#FF2D95] rounded-full text-xs flex items-center justify-center">
-                0
+                3
               </span>
-            </button>
+            </Link>
           </div>
         </div>
       </div>
