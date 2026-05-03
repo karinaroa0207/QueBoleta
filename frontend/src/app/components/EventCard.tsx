@@ -1,6 +1,7 @@
-import { motion } from 'motion/react';
-import { Calendar, MapPin } from 'lucide-react';
-import { Link } from 'react-router';
+import { motion } from 'framer-motion';
+import { Calendar, MapPin, Settings } from 'lucide-react'; // Agregué el ícono Settings
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // IMPORTAMOS EL CONTEXTO
 
 interface EventCardProps {
   id?: string;
@@ -13,8 +14,14 @@ interface EventCardProps {
 }
 
 export function EventCard({ id = '1', image, title, date, location, price, delay = 0 }: EventCardProps) {
+  
+  // EXTRAEMOS AL USUARIO PARA SABER SU ROL
+  const { user } = useAuth();
+  const isAdmin = user?.rol === 'ADMIN';
+
   return (
-    <Link to={`/evento/${id}`}>
+    // CAMBIAMOS LA RUTA: Si es admin, lo manda al panel. Si es cliente, al detalle.
+    <Link to={isAdmin ? '/admin' : `/evento/${id}`}>
       <motion.div
         className="group relative bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 hover:border-[#7B2CFF]/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(123,44,255,0.3)] cursor-pointer"
         initial={{ opacity: 0, y: 20 }}
@@ -56,9 +63,19 @@ export function EventCard({ id = '1', image, title, date, location, price, delay
               {price}
             </p>
           </div>
-          <button className="px-4 py-2 bg-gradient-to-r from-[#7B2CFF] to-[#9D4EDD] text-white text-sm rounded-lg hover:shadow-[0_0_20px_rgba(123,44,255,0.5)] transition-all duration-300">
-            Comprar
-          </button>
+          
+          {/* EL BOTÓN CAMBIA SEGÚN EL ROL */}
+          {isAdmin ? (
+            <button className="px-4 py-2 bg-[#1a1a1a] border border-gray-700 text-gray-300 text-sm rounded-lg hover:border-[#7B2CFF] hover:text-[#7B2CFF] transition-all duration-300 flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              Gestionar
+            </button>
+          ) : (
+            <button className="px-4 py-2 bg-gradient-to-r from-[#7B2CFF] to-[#9D4EDD] text-white text-sm rounded-lg hover:shadow-[0_0_20px_rgba(123,44,255,0.5)] transition-all duration-300">
+              Comprar
+            </button>
+          )}
+
         </div>
       </div>
 

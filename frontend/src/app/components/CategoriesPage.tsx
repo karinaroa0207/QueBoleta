@@ -1,19 +1,9 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Music, Sparkles, Theater, Trophy, Calendar, MapPin, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 type Category = 'Todos' | 'Conciertos' | 'Festivales' | 'Teatro' | 'Deportes';
-
-interface Event {
-  id: string;
-  name: string;
-  category: Category;
-  date: string;
-  location: string;
-  price: number;
-  image: string;
-}
 
 const categories: Category[] = ['Todos', 'Conciertos', 'Festivales', 'Teatro', 'Deportes'];
 
@@ -25,123 +15,37 @@ const categoryIcons: Record<Category, any> = {
   'Deportes': Trophy,
 };
 
-const events: Event[] = [
-  {
-    id: '1',
-    name: 'The Weeknd - After Hours Tour',
-    category: 'Conciertos',
-    date: '15 Jun 2026',
-    location: 'Movistar Arena, Bogotá',
-    price: 350000,
-    image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600',
-  },
-  {
-    id: '2',
-    name: 'Karol G - Mañana Será Bonito',
-    category: 'Conciertos',
-    date: '22 Jul 2026',
-    location: 'Estadio El Campín, Bogotá',
-    price: 280000,
-    image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600',
-  },
-  {
-    id: '3',
-    name: 'Stereo Picnic 2026',
-    category: 'Festivales',
-    date: '25-27 Mar 2026',
-    location: 'Parque Simón Bolívar, Bogotá',
-    price: 450000,
-    image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600',
-  },
-  {
-    id: '4',
-    name: 'Lollapalooza Colombia',
-    category: 'Festivales',
-    date: '10-12 Sep 2026',
-    location: 'Bogotá',
-    price: 520000,
-    image: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?w=600',
-  },
-  {
-    id: '5',
-    name: 'El Rey León - Musical',
-    category: 'Teatro',
-    date: '05 May 2026',
-    location: 'Teatro Mayor, Bogotá',
-    price: 180000,
-    image: 'https://images.unsplash.com/photo-1503095396549-807759245b35?w=600',
-  },
-  {
-    id: '6',
-    name: 'Hamilton - Broadway',
-    category: 'Teatro',
-    date: '18 Jun 2026',
-    location: 'Teatro Colón, Bogotá',
-    price: 220000,
-    image: 'https://images.unsplash.com/photo-1512732351148-6c1886570412?w=600',
-  },
-  {
-    id: '7',
-    name: 'Colombia vs Argentina - Eliminatorias',
-    category: 'Deportes',
-    date: '30 Ago 2026',
-    location: 'Estadio Metropolitano, Barranquilla',
-    price: 150000,
-    image: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600',
-  },
-  {
-    id: '8',
-    name: 'NBA Global Games - Lakers',
-    category: 'Deportes',
-    date: '15 Oct 2026',
-    location: 'Movistar Arena, Bogotá',
-    price: 380000,
-    image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600',
-  },
-  {
-    id: '9',
-    name: 'Coldplay - Music of the Spheres',
-    category: 'Conciertos',
-    date: '10 Ago 2026',
-    location: 'Estadio Atanasio Girardot, Medellín',
-    price: 320000,
-    image: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=600',
-  },
-  {
-    id: '10',
-    name: 'Bad Bunny - World Tour',
-    category: 'Conciertos',
-    date: '20 Sep 2026',
-    location: 'Estadio Pascual Guerrero, Cali',
-    price: 290000,
-    image: 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600',
-  },
-  {
-    id: '11',
-    name: 'Rock al Parque 2026',
-    category: 'Festivales',
-    date: '15-17 Jul 2026',
-    location: 'Parque Simón Bolívar, Bogotá',
-    price: 0,
-    image: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=600',
-  },
-  {
-    id: '12',
-    name: 'La Casa de Bernarda Alba',
-    category: 'Teatro',
-    date: '12 May 2026',
-    location: 'Teatro Libre, Bogotá',
-    price: 95000,
-    image: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=600',
-  },
-];
-
 export function CategoriesPage() {
   const [activeCategory, setActiveCategory] = useState<Category>('Todos');
+  const [dbEvents, setDbEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  // 1. Llamamos a Java para traer los eventos de PostgreSQL
+  useEffect(() => {
+    fetch('http://localhost:8080/api/eventos')
+      .then(res => res.json())
+      .then(data => {
+        setDbEvents(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error conectando a Java:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  // 2. Filtramos usando la Llave Foránea de Java (event.categoria.nombre)
   const filteredEvents = activeCategory === 'Todos'
-    ? events
-    : events.filter(event => event.category === activeCategory);
+    ? dbEvents
+    : dbEvents.filter(event => event.categoria?.nombre === activeCategory);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#000000] flex items-center justify-center">
+        <p className="text-[#00C2FF] text-xl font-bold animate-pulse">Cargando categorías...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#000000] relative overflow-hidden">
@@ -246,27 +150,27 @@ export function CategoriesPage() {
                   {/* Event Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={event.image}
-                      alt={event.name}
+                      src={event.imagenUrl}
+                      alt={event.nombre}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
 
                     {/* Category Badge */}
                     <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md bg-black/50 text-white border border-white/20">
-                      {event.category}
+                      {event.categoria?.nombre || 'General'}
                     </div>
 
                     {/* Price Tag */}
                     <div className="absolute bottom-3 right-3">
-                      {event.price === 0 ? (
+                      {event.precio === 0 ? (
                         <div className="px-3 py-1 rounded-lg backdrop-blur-md bg-[#00C2FF]/20 border border-[#00C2FF]/50">
                           <span className="text-sm font-bold text-[#00C2FF]">GRATIS</span>
                         </div>
                       ) : (
                         <div className="px-3 py-1 rounded-lg backdrop-blur-md bg-black/60 border border-white/20">
                           <span className="text-sm font-bold text-white">
-                            ${event.price.toLocaleString('es-CO')}
+                            ${event.precio.toLocaleString('es-CO')}
                           </span>
                         </div>
                       )}
@@ -276,17 +180,17 @@ export function CategoriesPage() {
                   {/* Event Info */}
                   <div className="p-5">
                     <h3 className="text-lg font-bold text-white mb-3 line-clamp-2 group-hover:text-[#00C2FF] transition-colors">
-                      {event.name}
+                      {event.nombre}
                     </h3>
 
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-sm text-gray-400">
                         <Calendar className="w-4 h-4 text-[#7B2CFF]" />
-                        {event.date}
+                        {event.fecha}
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-400">
                         <MapPin className="w-4 h-4 text-[#00C2FF]" />
-                        <span className="line-clamp-1">{event.location}</span>
+                        <span className="line-clamp-1">{event.ciudad}</span>
                       </div>
                     </div>
 

@@ -1,4 +1,4 @@
-package com.queboleta.catalogo;
+package com.queboleta.catalogo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

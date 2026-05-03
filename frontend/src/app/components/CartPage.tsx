@@ -1,70 +1,17 @@
-import { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, Ticket, MapPin, Calendar } from 'lucide-react';
-import { Link } from 'react-router';
-
-interface CartItem {
-  id: string;
-  eventName: string;
-  eventDate: string;
-  location: string;
-  ticketType: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { Link } from 'react-router-dom';
+// 1. Importamos el baúl de datos
+import { useCart } from '../context/CartContext'; 
 
 export function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: '1',
-      eventName: 'The Weeknd - After Hours Tour',
-      eventDate: '15 Jun 2026',
-      location: 'Movistar Arena, Bogotá',
-      ticketType: 'VIP - Platea Alta',
-      price: 350000,
-      quantity: 2,
-      image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400',
-    },
-    {
-      id: '2',
-      eventName: 'Karol G - Mañana Será Bonito',
-      eventDate: '22 Jul 2026',
-      location: 'Estadio El Campín, Bogotá',
-      ticketType: 'Preferencial',
-      price: 280000,
-      quantity: 1,
-      image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400',
-    },
-    {
-      id: '3',
-      eventName: 'Coldplay - Music of the Spheres',
-      eventDate: '10 Ago 2026',
-      location: 'Estadio Atanasio Girardot, Medellín',
-      ticketType: 'General',
-      price: 220000,
-      quantity: 3,
-      image: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400',
-    },
-  ]);
+  // 2. Traemos todo lo que necesitamos del contexto
+  const { cart, removeFromCart, total } = useCart();
 
-  const updateQuantity = (id: string, delta: number) => {
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
-    );
-  };
-
-  const removeItem = (id: string) => {
-    setCartItems(items => items.filter(item => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Cálculos dinámicos basados en lo que haya en el carrito real
+  const subtotal = total;
   const serviceFee = subtotal * 0.05;
-  const total = subtotal + serviceFee;
+  const finalTotal = subtotal + serviceFee;
 
   return (
     <div className="min-h-screen bg-[#000000] relative overflow-hidden">
@@ -94,14 +41,14 @@ export function CartPage() {
             </h1>
           </div>
           <p className="text-gray-400 text-lg">
-            {cartItems.length} {cartItems.length === 1 ? 'evento seleccionado' : 'eventos seleccionados'}
+            {cart.length} {cart.length === 1 ? 'evento seleccionado' : 'eventos seleccionados'}
           </p>
         </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {cartItems.length === 0 ? (
+            {cart.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -118,9 +65,10 @@ export function CartPage() {
                 </Link>
               </motion.div>
             ) : (
-              cartItems.map((item, index) => (
+              // Usamos cart (del contexto) en lugar de cartItems
+              cart.map((item, index) => (
                 <motion.div
-                  key={item.id}
+                  key={`${item.eventId}-${index}`} // Key única
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -145,52 +93,29 @@ export function CartPage() {
 
                       <div className="space-y-1.5 mb-3">
                         <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Calendar className="w-4 h-4 text-[#00C2FF]" />
-                          {item.eventDate}
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <MapPin className="w-4 h-4 text-[#00C2FF]" />
-                          {item.location}
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
                           <Ticket className="w-4 h-4 text-[#7B2CFF]" />
                           {item.ticketType}
                         </div>
+                        {/* Nota: Como el contexto simplificado no tiene fecha/lugar, puedes agregarlos luego o dejar iconos decorativos */}
                       </div>
 
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        {/* Quantity Controls */}
                         <div className="flex items-center gap-3">
-                          <span className="text-sm text-gray-400">Cantidad:</span>
-                          <div className="flex items-center gap-2 bg-[#1a1a1a] rounded-lg p-1">
-                            <button
-                              onClick={() => updateQuantity(item.id, -1)}
-                              className="p-1.5 hover:bg-[#7B2CFF]/20 rounded text-gray-300 hover:text-[#7B2CFF] transition-colors"
-                            >
-                              <Minus className="w-4 h-4" />
-                            </button>
-                            <span className="w-8 text-center font-semibold text-white">{item.quantity}</span>
-                            <button
-                              onClick={() => updateQuantity(item.id, 1)}
-                              className="p-1.5 hover:bg-[#00C2FF]/20 rounded text-gray-300 hover:text-[#00C2FF] transition-colors"
-                            >
-                              <Plus className="w-4 h-4" />
-                            </button>
-                          </div>
+                          <span className="text-sm text-gray-400 font-medium">Cantidad: {item.quantity}</span>
                         </div>
 
                         {/* Price */}
                         <div className="flex items-center justify-between sm:justify-end gap-4">
                           <div className="text-right">
                             <p className="text-sm text-gray-400">
-                              ${item.price.toLocaleString('es-CO')} × {item.quantity}
+                              ${item.price.toLocaleString('es-CO')} c/u
                             </p>
                             <p className="text-xl font-bold text-white">
                               ${(item.price * item.quantity).toLocaleString('es-CO')}
                             </p>
                           </div>
                           <button
-                            onClick={() => removeItem(item.id)}
+                            onClick={() => removeFromCart(index)}
                             className="p-2 hover:bg-red-500/10 rounded-lg text-gray-400 hover:text-red-400 transition-colors"
                           >
                             <Trash2 className="w-5 h-5" />
@@ -205,7 +130,7 @@ export function CartPage() {
           </div>
 
           {/* Order Summary */}
-          {cartItems.length > 0 && (
+          {cart.length > 0 && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -232,12 +157,11 @@ export function CartPage() {
                   <div className="flex justify-between text-xl font-bold">
                     <span className="text-white">Total</span>
                     <span className="bg-gradient-to-r from-[#7B2CFF] to-[#00C2FF] bg-clip-text text-transparent">
-                      ${total.toLocaleString('es-CO')}
+                      ${finalTotal.toLocaleString('es-CO')}
                     </span>
                   </div>
                 </div>
 
-                {/* Checkout Button */}
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -251,28 +175,11 @@ export function CartPage() {
                   <div className="absolute inset-0 bg-gradient-to-r from-[#00C2FF] to-[#7B2CFF] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </motion.button>
 
-                {/* Security Info */}
                 <div className="text-center text-xs text-gray-500 space-y-1">
                   <p className="flex items-center justify-center gap-1">
                     <span className="text-[#00C2FF]">🔒</span> Pago 100% seguro
                   </p>
                   <p>Aceptamos todas las tarjetas de crédito y débito</p>
-                </div>
-
-                {/* Payment Methods */}
-                <div className="mt-6 pt-6 border-t border-gray-800">
-                  <p className="text-xs text-gray-500 text-center mb-3">Métodos de pago</p>
-                  <div className="flex justify-center items-center gap-3 opacity-60">
-                    <div className="w-10 h-7 bg-[#1a1a1a] rounded border border-gray-700 flex items-center justify-center text-[10px] text-gray-400">
-                      VISA
-                    </div>
-                    <div className="w-10 h-7 bg-[#1a1a1a] rounded border border-gray-700 flex items-center justify-center text-[10px] text-gray-400">
-                      MC
-                    </div>
-                    <div className="w-10 h-7 bg-[#1a1a1a] rounded border border-gray-700 flex items-center justify-center text-[10px] text-gray-400">
-                      PSE
-                    </div>
-                  </div>
                 </div>
               </div>
             </motion.div>

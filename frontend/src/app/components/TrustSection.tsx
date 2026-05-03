@@ -1,5 +1,5 @@
 import { Shield, Smartphone, Headphones } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 
 const features = [
   {
